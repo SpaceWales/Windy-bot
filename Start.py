@@ -83,16 +83,16 @@ async def on_message(message):
 
 def offline_mode():
     msg = ""
-    location_data = Location.start("caseville")
+    location_data = Location.start("farmington")
     weather_data = Weather.start(location_data,"minutely")
     msg  += CustomizeWeather.start(weather_data,"-current")
     print(msg)
 
 
 #commented out for local runs
-bot.run(DISCORD_TOKEN)
+#bot.run(DISCORD_TOKEN)
 
-#offline_mode()
+offline_mode()
 
 
 
