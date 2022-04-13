@@ -49,15 +49,10 @@ async def on_ready():
 
 @bot.event
 async def on_message(message):
-    print(type(message))
-    print(message)
-
     #don't run commands against the bot
     if message.author != bot.user:
         #check if command
         if is_command(message):
-            #commands are being entered
-            #check here for commands and send them out
             #split message, [0] is !windy and can be ignored
             msg = ""
             msgContent = message.content.split()
@@ -80,7 +75,6 @@ async def on_message(message):
 
 #pass in arguments that get handed to functions to simulate bot tests
 
-
 def offline_mode():
     msg = ""
     location_data = Location.start("farmington")
@@ -90,9 +84,9 @@ def offline_mode():
 
 
 #commented out for local runs
-#bot.run(DISCORD_TOKEN)
+bot.run(DISCORD_TOKEN)
 
-offline_mode()
+#offline_mode()
 
 
 

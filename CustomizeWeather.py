@@ -10,15 +10,12 @@ import time
 rem_list = ['dt','sunrise','sunset']
 
 def degree_to_direction(deg):
-    print("inside directions")
     directions = ["N","NNE","NE","ENE","E","ESE", "SE", "SSE","S","SSW","SW","WSW","W","WNW","NW","NNW"]
     val = int((deg / 22.5) + .5)
     return directions[(val % 16)]
 
 def timestamps_to_msg(obj):
-    msg = ""
-    msg += "{}\n".format(unix_to_date(obj))
-    return msg
+    return "{}\n".format(unix_to_date(obj))
 
 def unix_to_date(unix):
     return time.ctime(int(unix))
