@@ -44,16 +44,3 @@ def start(weather_data,time_select = "",windonly = ""):
 
 
     return msg
-
-
-
-
-
-            # msg += "Local Time: {}\n".format(time.ctime(int(current_data['dt'])))
-            # msg += "Sunrise: {}\n".format(time.ctime(int(current_data['sunrise'])))
-            # msg += "Sunset: {}\n".format(time.ctime(int(current_data['sunset'])))
-            # msg += "temp: {}\n".format(current_data['temp'])
-            # #optional? 
-            # msg += "wind speed: {}\n".format(current_data['wind_speed'])
-            # msg += "wind deg: {}\n".format(current_data['wind_deg'])
-            # msg += "wind gust: {}\n".format(current_data['wind_gust'])
