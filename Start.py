@@ -38,6 +38,11 @@ def help_commands():
         msg += ("{}\n".format(command))
     return msg
 
+def is_wind_only(message):
+    if '-windonly' in message:
+        return True
+    else:
+        return False
 
 @bot.event
 async def on_ready():
@@ -55,19 +60,29 @@ async def on_message(message):
         if is_command(message):
             #split message, [0] is !windy and can be ignored
             msg = ""
+            windonly = is_wind_only(message.content)
             msgContent = message.content.split()
+            
             if "help" == msgContent[1]:
-                msg += help_commands()
+                msg = help_commands()
                 await message.channel.send("Sure {}. Commands are: \n{}".format(message.author, msg))
+            
             if "-location" == msgContent[1]:
-                #send msgContent[2] to location API to get coordinates
                 location_data = Location.start(msgContent[2])
-                #send location_data to weather API
                 weather_data = Weather.start(location_data,"minutely")
-                #check current tag
-                if msgContent[3] is not None or "-current" in msgContent[3] or len(msgContent[3] == 0):
-                    msg += CustomizeWeather.start(weather_data, msgContent[3])
-                await message.channel.send(msg)
+                
+                if msgContent[3] is not None or "-current" == msgContent[3] or len(msgContent[3] == 0):
+                    current_data = weather_data['current']
+                    msg = CustomizeWeather.start(current_data, windonly)
+                    await message.channel.send(msg)
+                
+                if "-daily" == msgContent[3]:
+
+                    for current_data in weather_data['daily']:
+                        msg = CustomizeWeather.start(current_data, windonly)
+                        await message.channel.send(msg)
+                
+                
             
 
 
@@ -77,10 +92,12 @@ async def on_message(message):
 
 def offline_mode():
     msg = ""
-    location_data = Location.start("farmington")
+    location_data = Location.start("caseville")
     weather_data = Weather.start(location_data,"minutely")
-    msg  += CustomizeWeather.start(weather_data,"-current")
-    print(msg)
+    #need to mofify this for multiple message send
+    for current_data in weather_data['daily']:
+        msg = CustomizeWeather.start(current_data, True)
+        print(msg)
 
 
 #commented out for local runs

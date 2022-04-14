@@ -7,7 +7,9 @@ import time
 ## -current, hourly, daily
 ## -windonly follows and gets only the  wind info
 
-rem_list = ['dt','sunrise','sunset']
+rem_list = ['dt','temp','wind_deg','wind_speed','wind_gust','weather']
+keep_list = ['dt','wind_deg','wind_speed','wind_gust']
+weather_rem = ['description']
 
 def degree_to_direction(deg):
     directions = ["N","NNE","NE","ENE","E","ESE", "SE", "SSE","S","SSW","SW","WSW","W","WNW","NW","NNW"]
@@ -20,24 +22,41 @@ def timestamps_to_msg(obj):
 def unix_to_date(unix):
     return time.ctime(int(unix))
 
-def start(weather_data,time_select = "",windonly = ""):
+def clean_weather_obj(arr):
+    #only 1, I know this is ugly
+    for obj in arr:
+        newdict = {k: obj[k] for k in weather_rem}
+        obj = newdict
+    return obj
+
+def assemble_message_with_selection(current_data, windonly):
     msg = ""
-    if time_select == "-current" or len(time_select) == 0:
-        #by default or current selected only return current data
-        try:
-            current_data = weather_data['current']
-            #need to convert unix times, and collate a message with the rest of the data
-            msg += timestamps_to_msg(current_data['dt'])
-            #took out sunrise and sunset
-            [current_data.pop(key) for key in rem_list]
-            for k,v in current_data.items():
-                if k == 'wind_deg':
-                    v = degree_to_direction(v)
-                msg += "{} : {}\n".format(k, v)
+    
+    if windonly:
+        newdict = {k: current_data[k] for k in keep_list}
+        current_data = newdict
+    else:
+        newdict = {k: current_data[k] for k in rem_list}
+        current_data = newdict
 
-        except Exception as e:
-            print(e)
-    ##if other modifiers
+    msg += timestamps_to_msg(current_data['dt'])
+    current_data.pop('dt')
 
+    #get rid of weather data
+    if not windonly:
+        current_data['weather'] = clean_weather_obj(current_data['weather'])
 
+    for k,v in current_data.items():
+        if k == 'wind_deg':
+            v = degree_to_direction(v)
+        msg += "{} : {}\n".format(k, v)
+    
+    return msg
+
+def start(current_data, windonly = True):
+    msg = ""
+    try:
+        msg = assemble_message_with_selection(current_data, windonly)
+    except Exception as e:
+        print(e)
     return msg

@@ -27,6 +27,6 @@ def start(string_location):
                 if 'latitude' in b:
                     cor = b
 
-    print(cor)
+    #print(cor)
     return cor
     
