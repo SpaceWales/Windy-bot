@@ -77,7 +77,6 @@ async def on_message(message):
                     await message.channel.send(msg)
                 
                 if "-daily" == msgContent[3]:
-
                     for current_data in weather_data['daily']:
                         msg = CustomizeWeather.start(current_data, windonly)
                         await message.channel.send(msg)
