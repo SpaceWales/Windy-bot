@@ -24,20 +24,22 @@ def unix_to_date(unix):
 
 def clean_weather_obj(arr):
     #only 1, I know this is ugly
+    newdict = {}
     for obj in arr:
         newdict = {k: obj[k] for k in weather_rem}
-        obj = newdict
-    return obj
+    return newdict
+
+def clean_weather_data(obj,listy):
+    newdict = {k: obj[k] for k in listy}
+    return newdict
 
 def assemble_message_with_selection(current_data, windonly):
     msg = ""
     
     if windonly:
-        newdict = {k: current_data[k] for k in keep_list}
-        current_data = newdict
+        current_data = clean_weather_data(current_data,keep_list)
     else:
-        newdict = {k: current_data[k] for k in rem_list}
-        current_data = newdict
+        current_data = clean_weather_data(current_data,rem_list)
 
     msg += timestamps_to_msg(current_data['dt'])
     current_data.pop('dt')
